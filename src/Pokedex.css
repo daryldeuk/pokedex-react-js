@@ -1,0 +1,76 @@
+body {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+    background-color: rgb(92, 184, 252);
+}
+
+.header {
+    text-align: center;
+    margin-top: -40px;
+    margin-bottom: -40px;
+}
+
+.logo {
+    height: 200px;
+}
+
+.nav {
+    width: 150px;
+    float: left;
+    display: inline;
+    margin-right: 10px;
+    margin-top: -20px;
+}
+
+.nav > ul {
+    margin-left: -10px;
+}
+
+.nav > ul > li {
+    list-style-type: none;
+    margin-right:30px;
+    color: white;
+    margin-bottom: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.nav > ul > li:hover, .nav > ul > li:focus {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.nav > ul > li > a {
+    text-decoration: none;
+    color: #000;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    column-gap: 20px;
+    row-gap: 20px;
+}
+
+.card {
+    background-color: #ffffff;
+}
+
+.card-img {
+    text-align: center;
+}
+
+.card-img-avatar {
+    width: 50%;
+    height: 50%;
+}
+
+.card-details {
+    height : 120px;
+    padding-left : 16px;
+}
+
+.card-label {
+    background-color : #e7e7e7;
+    color : black;
+    margin-right : 10px;
+    padding : 5px;
+}
