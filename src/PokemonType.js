@@ -19,8 +19,6 @@ export default class PokemonType extends Component {
         const objPokemonTypeRes = await fetch(url);
         const objPokemonTypeData = await objPokemonTypeRes.json();
 
-        console.log(objPokemonTypeData);
-
         Promise.all(objPokemonTypeData.pokemon.map(key =>
             fetch(key.pokemon.url).then(resp => resp.json())
         )).then(resp => {
@@ -38,20 +36,18 @@ export default class PokemonType extends Component {
         this.loadPokemonType(this.props.location.state.url);
     }
 
-    componentWillReceiveProps (nextProps) {
-        this.setState({ pokemon : [] }); // To prevent display the previous types
-        this.loadPokemonType(nextProps.location.state.url);
+    componentDidUpdate (prevProps) {
+        if (prevProps.location.state.url !== this.props.location.state.url) {
+            this.setState({ pokemon : [] });
+            this.loadPokemonType(this.props.location.state.url);
+        }
     }
 
     render () {
         return (
             <>
                 <div className="content">
-                    {
-                        (this.state.pokemon.length > 0) ?
-                            this.state.pokemon.map((key) => <PokedexCard name={key.name} avatar={key.avatar} attr={key.attr} />)
-                        : <h1>No results found... Please select other pokemon type</h1>
-                    }
+                    {this.state.pokemon.map((key) => <PokedexCard name={key.name} avatar={key.avatar} attr={key.attr} />)}
                 </div>
             </>
         );
