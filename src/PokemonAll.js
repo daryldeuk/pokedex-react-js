@@ -34,7 +34,7 @@ export default class PokemonAll extends Component {
         )).then(resp => {
             resp.map((key) => {
                 const strName = key.name.charAt(0).toUpperCase() + key.name.slice(1);
-                const strAvatar = key.sprites.other['official-artwork'].front_default;
+                const strAvatar = key.sprites.other['official-artwork'].front_default || key.sprites.front_default;
                 const arrAttributes = key.types.map((key) => capitalFirstLetter(key.type.name) + " " );
                 this.setState({ pokemon : this.state.pokemon.concat([{ name : strName, avatar : strAvatar, attr : arrAttributes }]) });
                 return null;
