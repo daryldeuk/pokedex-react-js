@@ -38,6 +38,7 @@ export default class PokemonType extends Component {
 
     componentDidUpdate (prevProps) {
         if (prevProps.location.state.url !== this.props.location.state.url) {
+            console.log('Update');
             this.setState({ pokemon : [] });
             this.loadPokemonType(this.props.location.state.url);
         }

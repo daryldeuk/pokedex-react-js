@@ -18,11 +18,29 @@ export default class Pokedex extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pokemon_type : []
+            pokemon_type : [],
+            results : 0,
+            limit : 100,
+            currentpage : 1,
+            lastpage : 0,
+            pages : []
         }
     }
 
-    async componentDidMount() {
+    async loadAllPokemon () {
+        const objPokedexRes = await fetch('https://pokeapi.co/api/v2/pokemon');
+        const objPokedexData = await objPokedexRes.json();
+        let lastPage = parseInt(objPokedexData.count / this.state.limit);
+        if ((objPokedexData.count % this.state.limit) > 0)
+            lastPage++;
+
+        for (let i = 0; i < lastPage; i++) {
+            this.setState({ pages : this.state.pages.concat([i + 1]) })
+        }
+        
+        this.setState({ results : objPokedexData.count, lastpage : lastPage });
+
+        console.log(this.state.pages);
 
         const objPokemonTypeRes = await fetch('https://pokeapi.co/api/v2/type/');
         const objPokemonTypeData = await objPokemonTypeRes.json();
@@ -38,6 +56,10 @@ export default class Pokedex extends Component {
         );
     }
 
+    componentDidMount() {
+        this.loadAllPokemon();        
+    }
+
     render() {
         return (
             <>
@@ -46,6 +68,14 @@ export default class Pokedex extends Component {
                         <div className="header">
                             <PokemonLogo src={logo} />
                         </div>
+                        <PaginationButton name="First" page="1" />
+                        {
+                            this.state.pages.map((key) => 
+                                <PaginationButton name={key} page={key} />
+                            )
+
+                        }
+                        <PaginationButton name="Last" page={this.state.lastpage} />
                         <div className="nav">
                             <h4 align="center">Select Type</h4>
                             <ul>
@@ -91,6 +121,16 @@ class PokemonLabelType extends Component {
     render () {
         return (
             <li key={this.props.index} style={{ backgroundColor: `${this.props.bgcolor}` }}>{this.props.name}</li>
+        )
+    }
+}
+
+class PaginationButton extends Component {
+    render () {
+        return (
+            <Link to={{ pathname: `/`, state : { page : this.props.page} }} key={this.props.lastpage}>
+                <button className="page-btn">{this.props.name}</button>
+            </Link>
         )
     }
 }

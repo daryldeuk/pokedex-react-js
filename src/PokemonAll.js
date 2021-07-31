@@ -11,32 +11,21 @@ export default class PokemonAll extends Component {
 
     constructor (props) {
         super(props);
+        console.log()
         this.state = {
             pokemon : [],
             limit : 100,
-            offset : 0,
-            results : 0
+            results : 0,
+            currentpage : 1
         }
     }
 
-    firstPage() {
-        this.setState({
-            offset : 0,
-            limit : 100,
-            pokemon: []
-        });
-    }
-
-    lastPage() {
-        this.setState({
-            offset : this.state.limit * parseInt(this.state.results / this.state.limit),
-            limit : 100,
-            pokemon: []
-        });
-    }
-
-    async loadAllPokemon () {
-        const objPokedexRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=' + this.state.limit + '&offset=' + this.state.offset);
+    async loadAllPokemon (page) {
+        page = page === undefined ? this.state.currentpage : page;
+        let limit = this.state.limit * page;
+        let offset = limit - 100;
+        // console.log(this.state);
+        const objPokedexRes = await fetch('https://pokeapi.co/api/v2/pokemon?limit=' + limit + '&offset=' + offset);
         const objPokedexData = await objPokedexRes.json();
         this.setState({ results : objPokedexData.count });
 
@@ -54,36 +43,28 @@ export default class PokemonAll extends Component {
     }
 
     componentDidMount() {
-        this.loadAllPokemon();
+        this.loadAllPokemon(this.state.currentpage);
     }
 
     componentDidUpdate(prevProps) {
-
+        if (prevProps.location.state !== this.props.location.state) {
+            console.log('change page');
+            console.log(this.props.location.state.page);
+            this.loadAllPokemon(this.props.location.state.page);
+            this.setState({ pokemon : [] });
+        }
     }
 
     render () {
         return (
             <>
-                {/* <Router>
-                    <Link to={{ pathname: '/', state : { page : 0} }} key="0">
-                        <button onClick={() => this.firstPage()}>&#60;&#60;</button>
-                    </Link>
-                    <Link to={{ pathname: '/', state : { page : 1} }} key="1">
-                        <button>1</button>
-                    </Link>
-                    <Link to={{ pathname: '/', state : { page : 2} }} key="2">
-                        <button>2</button>
-                    </Link>
-                    <Link to={{ pathname: '/', state : { page : 12} }} key="12">
-                        <button onClick={() => this.lastPage()}>&#62;&#62;</button>
-                    </Link>
-
-                    <Route exact path="/" component={PokemonAll} />
-                </Router> */}
-                <div className="content">
-                    {this.state.pokemon.map((key) => <PokedexCard name={key.name} avatar={key.avatar} attr={key.attr} key={key.name} />)}
-                </div>
-
+                {
+                    
+                    <div className="content">
+                        {this.state.pokemon.map((key) => <PokedexCard name={key.name} avatar={key.avatar} attr={key.attr} key={key.name} />)}
+                    </div> 
+                }
+                
             </>
         )
     }
